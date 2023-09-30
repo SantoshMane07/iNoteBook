@@ -17,28 +17,36 @@ function Signup(props) {
   const handleSubmit = async (e) => {
     //Api call
     e.preventDefault();
-    const {name,email,password,cpassword} = credentials;  
-    const response = await fetch("http://localhost:5000/api/auth/createuser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name:name,
-        email:email,
-        password:password,
-      }),
-    });
-    const json = await response.json();
-    console.log(json);
-    if (json.success) {
-      //redirect to home page valid user
-      localStorage.setItem("token", json.authtoken);
-      navigate("/");
-      props.showAlert("Account created successfully","success");
-    } else {
-      //Alert - f
-      props.showAlert(json.error,"danger");
+    const { name, email, password, cpassword } = credentials;
+    //Check confirm password and password are same
+    if (cpassword === password) {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/createuser",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
+        }
+      );
+      const json = await response.json();
+      console.log(json);
+      if (json.success) {
+        //redirect to home page valid user
+        localStorage.setItem("token", json.authtoken);
+        navigate("/");
+        props.showAlert("Account created successfully", "success");
+      } else {
+        //Alert - f
+        props.showAlert(json.error, "danger");
+      }
+    }else{
+      props.showAlert("Confirm password and password does not match", "danger");
     }
   };
 
